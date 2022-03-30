@@ -1,5 +1,3 @@
-import { LancamentoService } from './../shared/services/lancamento.service';
-import { HttpUtilService } from './../shared/services/http-util.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -12,14 +10,21 @@ import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatCardModule}  from '@angular/material/card';
-import { MatTableModule}  from '@angular/material/table';
-import { MatPaginatorModule}  from '@angular/material/paginator';
-import { MatSortModule}  from '@angular/material/sort';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import {
+  MatPaginatorModule,
+  MatPaginatorIntl,
+} from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 import { ListagemComponent } from './components/listagem/listagem.component';
 import { LancamentoComponent } from './components/lancamento/lancamento.component';
 import { FuncionarioComponent } from './components/funcionario.component';
+
+import { HttpUtilService } from '../shared/services/http-util.service';
+import { LancamentoService } from '../shared/services/lancamento.service';
+import { PtBrMatPaginatorIntl } from '../shared/pt-br-mat-paginator-intl';
 
 @NgModule({
   imports: [
@@ -36,16 +41,13 @@ import { FuncionarioComponent } from './components/funcionario.component';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatCardModule
+    MatCardModule,
   ],
-  declarations: [
-  	ListagemComponent,
-  	LancamentoComponent,
-  	FuncionarioComponent
-  ],
+  declarations: [ListagemComponent, LancamentoComponent, FuncionarioComponent],
   providers: [
     HttpUtilService,
-    LancamentoService
-  ]
+    LancamentoService,
+    { provide: MatPaginatorIntl, useClass: PtBrMatPaginatorIntl },
+  ],
 })
-export class FuncionarioModule { }
+export class FuncionarioModule {}
