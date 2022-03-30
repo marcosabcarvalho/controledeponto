@@ -1,3 +1,5 @@
+import { LancamentoService } from './../shared/services/lancamento.service';
+import { HttpUtilService } from './../shared/services/http-util.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -40,6 +42,10 @@ import { FuncionarioComponent } from './components/funcionario.component';
   	ListagemComponent,
   	LancamentoComponent,
   	FuncionarioComponent
+  ],
+  providers: [
+    HttpUtilService,
+    LancamentoService
   ]
 })
 export class FuncionarioModule { }
