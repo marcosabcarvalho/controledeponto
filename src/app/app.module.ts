@@ -1,3 +1,4 @@
+import { AdminModule } from './admin/admin.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -36,7 +37,8 @@ import { FuncionarioRoutingModule } from './funcionario/funcionario-routing.modu
     CadastroPfRoutingModule,
     FuncionarioModule,
     FuncionarioRoutingModule,
-    AppRoutingModule
+    AppRoutingModule,
+    AdminModule,
   ],
     providers: [],
     bootstrap: [AppComponent]
