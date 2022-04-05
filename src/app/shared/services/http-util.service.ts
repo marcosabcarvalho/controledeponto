@@ -3,27 +3,27 @@ import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class HttpUtilService {
-  constructor() {}
+
+  constructor() { }
 
   headers() {
-    let httpHeaders: HttpHeaders = new HttpHeaders();
+  	let httpHeaders: HttpHeaders = new HttpHeaders();
 
-    if (localStorage['token']) {
-      httpHeaders = httpHeaders.set(
-        'Authorization',
-        'Bearer ' + localStorage['token']
-      );
-    }
+  	if (localStorage['token']) {
+  	  httpHeaders = httpHeaders.set(
+  	  	'Authorization', 'Bearer ' + localStorage['token']
+  	  );
+  	}
 
     return { headers: httpHeaders };
   }
 
   obterIdUsuario(): string {
-    if (!localStorage['token']) {
-      return '';
-    }
-    const dadosUsuario = this.obterDadosUsuario();
-    return dadosUsuario ? dadosUsuario.id : '';
+  	if (!localStorage['token']) {
+  	  return '';
+  	}
+  	const dadosUsuario = this.obterDadosUsuario();
+  	return dadosUsuario ? dadosUsuario.id : '';
   }
 
   obterIdEmpresa(): string {
@@ -40,4 +40,13 @@ export class HttpUtilService {
     }
     return JSON.parse(atob(localStorage['token'].split('.')[1]));
   }
+
+  obterPerfil(): string {
+    if (!localStorage['token']) {
+      return '';
+    }
+    const dadosUsuario = this.obterDadosUsuario();
+    return dadosUsuario ? dadosUsuario.role : '';
+  }
+
 }

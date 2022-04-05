@@ -1,15 +1,17 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes, CanActivate } from '@angular/router';
 import { AtualizacaoComponent } from './components/atualizacao/atualizacao.component';
 import { CadastroComponent } from './components/cadastro/cadastro.component';
 import { ListagemComponent } from './components/listagem/listagem.component';
 import { AdminComponent } from './components/admin.component';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 
+import { AdminGuard } from './services/admin-guard.service';
 
 export const AdminRoutes: Routes = [
 	{
 		path: 'admin',
 		component: AdminComponent,
+    canActivate: [AdminGuard],
 		children: [
 		  {
 			path: '',

@@ -1,11 +1,7 @@
-import { HttpUtilService } from 'src/app/shared/services/http-util.service';
-import { Tipo } from './../../../shared/models/tipo.enum';
-import { Funcionario } from './../../../shared/models/funcionario.model';
-import { Lancamento } from 'src/app/shared/models/lancamento.model';
-import { LancamentoService } from 'src/app/shared/services/lancamento.service';
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 import { MatSelect } from '@angular/material/select';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -14,6 +10,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
+
+import { LancamentoService } from '../../../shared/services/lancamento.service';
+import { Lancamento } from '../../../shared/models/lancamento.model';
+import { Funcionario } from '../../../shared/models/funcionario.model';
+import { HttpUtilService } from 'src/app/shared/services/http-util.service';
+import { FuncionarioService } from 'src/app/shared/services/funcionario.service';
+import { Tipo } from '../../../shared/models/tipo.enum';
 
 @Component({
   selector: 'app-listagem',
@@ -27,6 +30,10 @@ export class ListagemComponent implements OnInit {
   funcionarioId: string;
   totalLancamentos: number;
 
+  funcionarios: Funcionario[];
+  @ViewChild(MatSelect) matSelect: MatSelect;
+  form: FormGroup;
+
   private pagina: number;
   private ordem: string;
   private direcao: string;
@@ -35,12 +42,21 @@ export class ListagemComponent implements OnInit {
   	private lancamentoService: LancamentoService,
     private httpUtil: HttpUtilService,
     private snackBar: MatSnackBar,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private funcionarioService: FuncionarioService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     this.pagina = 0;
     this.ordemPadrao();
-    this.exibirLancamentos();
+    this.obterFuncionarios();
+    this.gerarForm();
+  }
+
+  gerarForm() {
+    this.form = this.fb.group({
+      funcs: ['', []]
+    });
   }
 
   ordemPadrao() {
@@ -48,8 +64,39 @@ export class ListagemComponent implements OnInit {
     this.direcao = 'DESC';
   }
 
+  get funcId(): string {
+    return sessionStorage['funcionarioId'] || false;
+  }
+
+  obterFuncionarios() {
+    this.funcionarioService.listarFuncionariosPorEmpresa()
+      .subscribe(
+        data => {
+          const usuarioId: string = this.httpUtil.obterIdUsuario();
+          this.funcionarios = (data.data as Funcionario[])
+            .filter(func => func.id != usuarioId);
+
+          if (this.funcId) {
+            this.form.get('funcs').setValue(parseInt(this.funcId, 10));
+            this.exibirLancamentos();
+          }
+        },
+        err => {
+          const msg: string = "Erro obtendo funcionários.";
+          this.snackBar.open(msg, "Erro", { duration: 5000 });
+        }
+      );
+  }
+
   exibirLancamentos() {
-    this.funcionarioId = '2';
+    if (this.matSelect.selected) {
+      this.funcionarioId = this.matSelect.selected['value'];
+    } else if (this.funcId) {
+      this.funcionarioId = this.funcId;
+    } else {
+      return;
+    }
+    sessionStorage['funcionarioId'] = this.funcionarioId;
 
     this.lancamentoService.listarLancamentosPorFuncionario(
         this.funcionarioId, this.pagina, this.ordem, this.direcao)
@@ -64,10 +111,6 @@ export class ListagemComponent implements OnInit {
           this.snackBar.open(msg, "Erro", { duration: 5000 });
         }
       );
-  }
-
-  remover(lancamentoId: string) {
-    alert(lancamentoId);
   }
 
   paginar(pageEvent: PageEvent) {
@@ -85,15 +128,50 @@ export class ListagemComponent implements OnInit {
     this.exibirLancamentos();
   }
 
+  removerDialog(lancamentoId: string) {
+    const dialog = this.dialog.open(ConfirmarDialog, {});
+    dialog.afterClosed().subscribe(remover => {
+      if (remover) {
+        this.remover(lancamentoId);
+      }
+    });
+  }
+
+  remover(lancamentoId: string) {
+    this.lancamentoService.remover(lancamentoId)
+      .subscribe(
+        data => {
+          const msg: string = "Lançamento removido com sucesso!";
+          this.snackBar.open(msg, "Sucesso", { duration: 5000 });
+          this.exibirLancamentos();
+        },
+        err => {
+          let msg: string = "Tente novamente em instantes.";
+          if (err.status == 400) {
+            msg = err.error.errors.join(' ');
+          }
+          this.snackBar.open(msg, "Erro", { duration: 5000 });
+        }
+      );
+  }
+
 }
 
-
-
-
-
-
-
-
-
-
+@Component({
+  selector: 'confirmar-dialog',
+  template: `
+    <h1 mat-dialog-title>Deseja realmente remover o lançamento?</h1>
+    <div mat-dialog-actions>
+      <button mat-button [mat-dialog-close]="false" tabindex="-1">
+        Não
+      </button>
+      <button mat-button [mat-dialog-close]="true" tabindex="2">
+        Sim
+      </button>
+    </div>
+  `,
+})
+export class ConfirmarDialog {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+}
 

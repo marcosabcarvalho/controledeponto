@@ -1,4 +1,3 @@
-import { SharedModule } from 'src/app/shared/shared.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -13,10 +12,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-import {
-  MatPaginatorModule,
-  MatPaginatorIntl,
-} from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 
 import { ListagemComponent } from './components/listagem/listagem.component';
@@ -26,6 +21,10 @@ import { FuncionarioComponent } from './components/funcionario.component';
 import { HttpUtilService } from '../shared/services/http-util.service';
 import { LancamentoService } from '../shared/services/lancamento.service';
 import { PtBrMatPaginatorIntl } from '../shared/pt-br-mat-paginator-intl';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -45,7 +44,11 @@ import { PtBrMatPaginatorIntl } from '../shared/pt-br-mat-paginator-intl';
     MatCardModule,
     SharedModule
   ],
-  declarations: [ListagemComponent, LancamentoComponent, FuncionarioComponent],
+  declarations: [
+    ListagemComponent,
+    LancamentoComponent,
+    FuncionarioComponent
+  ],
   providers: [
     HttpUtilService,
     LancamentoService,

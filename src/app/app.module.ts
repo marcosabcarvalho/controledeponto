@@ -1,4 +1,3 @@
-import { AdminModule } from './admin/admin.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -9,7 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { LoginModule } from './autenticacao/login/login.module'
+import { LoginModule } from './autenticacao/login/login.module';
 import { LoginRoutingModule } from './autenticacao/login/login-houting.module';
 import { CadastroPjModule } from './autenticacao/cadastro-pj/cadastro-pj.module';
 import { CadastroPjRoutingModule } from './autenticacao/cadastro-pj/cadastro-pj-routing.module';
@@ -18,11 +17,11 @@ import { CadastroPfRoutingModule } from './autenticacao/cadastro-pf/cadastro-pf-
 import { AppRoutingModule } from './app-routing.module';
 import { FuncionarioModule } from './funcionario/funcionario.module';
 import { FuncionarioRoutingModule } from './funcionario/funcionario-routing.module';
+import { AdminModule } from './admin/admin.module';
+import { AdminRoutingModule } from './admin/admin-routing.module';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -37,10 +36,11 @@ import { FuncionarioRoutingModule } from './funcionario/funcionario-routing.modu
     CadastroPfRoutingModule,
     FuncionarioModule,
     FuncionarioRoutingModule,
-    AppRoutingModule,
     AdminModule,
+    AdminRoutingModule,
+    AppRoutingModule,
   ],
-    providers: [],
-    bootstrap: [AppComponent]
-  })
-  export class AppModule { }
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
